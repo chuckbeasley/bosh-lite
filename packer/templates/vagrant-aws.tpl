@@ -27,12 +27,15 @@ Vagrant.configure('2') do |config|
   config.vm.provider :aws do |v|
     v.access_key_id =       env.fetch('BOSH_AWS_ACCESS_KEY_ID')
     v.secret_access_key =   env.fetch('BOSH_AWS_SECRET_ACCESS_KEY')
+    v.region =              env.fetch('BOSH_LITE_REGION', 'us-east-1')
     v.keypair_name =        env.fetch('BOSH_LITE_KEYPAIR', 'bosh')
     v.block_device_mapping = [{
       :DeviceName => '/dev/sda1',
+      'Ebs.VolumeType' => 'gp2',
       'Ebs.VolumeSize' => env.fetch('BOSH_LITE_DISK_SIZE', '80').to_i
     }]
     v.instance_type =       env.fetch('BOSH_LITE_INSTANCE_TYPE', 'm3.xlarge')
+    v.elastic_ip =          env.fetch('BOSH_LITE_ELASTIC_IP', nil)
     v.security_groups =     [env.fetch('BOSH_LITE_SECURITY_GROUP', 'inception')]
     v.subnet_id =           env.fetch('BOSH_LITE_SUBNET_ID') if env.include?('BOSH_LITE_SUBNET_ID')
     v.tags =                tags_from_environment(env)
@@ -65,9 +68,10 @@ fi
 
   port_forward_script = <<-IP_SCRIPT
 local_ip=`curl -s #{meta_data_local_ip_url}`
-echo "Setting up port forwarding for the CF Cloud Controller..."
+echo "Setting up port forwarding for CF..."
 sudo iptables -t nat -A PREROUTING -p tcp -d $local_ip --dport 80 -j DNAT --to 10.244.0.34:80
 sudo iptables -t nat -A PREROUTING -p tcp -d $local_ip --dport 443 -j DNAT --to 10.244.0.34:443
+sudo iptables -t nat -A PREROUTING -p tcp -d $local_ip --dport 2222 -j DNAT --to 10.244.0.34:2222
 sudo iptables -t nat -A PREROUTING -p tcp -d $local_ip --dport 4443 -j DNAT --to 10.244.0.34:4443
   IP_SCRIPT
 

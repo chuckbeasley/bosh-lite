@@ -3,7 +3,7 @@
 set -x
 
 # Remove release upgrader to prevent check-new-release from running
-apt-get remove -y ubuntu-release-upgrader-core
+apt-get -y remove ubuntu-release-upgrader-core
 
 # Make sure Udev doesn't block our network (http://6.ptmc.org/?p=164)
 echo "Cleaning up udev rules"
@@ -15,6 +15,7 @@ echo "Cleaning up BOSH provisioner left-overs"
 rm -rf /opt/bosh-provisioner/{repos,blobstore,tmp,assets}
 rm -rf /var/vcap/data/compile
 rm -rf /var/vcap/data/tmp/*blobstore*
+rm -rf /var/vcap/micro_bosh/data/cache/*
 
 echo "Cleaning up /tmp"
 rm -rf /tmp/*
@@ -51,3 +52,7 @@ find /usr/share/locale -maxdepth 1 -mindepth 1 -not -name 'en*' | xargs rm -rf
 
 echo "Cleaning up /usr/share/doc"
 rm -rf /usr/share/doc/*
+
+echo "Cleaning up garden disk"
+umount /tmp/garden-disk || true
+rm -rf /tmp/garden-disk

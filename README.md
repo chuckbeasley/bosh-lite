@@ -1,24 +1,28 @@
 # BOSH Lite
 
-* IRC: [`#bosh` on freenode](http://webchat.freenode.net/?channels=bosh)
+* Slack: #bosh on <https://slack.cloudfoundry.org>
 * Mailing lists:
   - [cf-bosh](https://lists.cloudfoundry.org/pipermail/cf-bosh) for asking BOSH usage and development questions
   - [cf-dev](https://lists.cloudfoundry.org/pipermail/cf-dev) for asking CloudFoundry questions
 * CI: <https://bosh-lite.ci.cf-app.com/pipelines/bosh-lite>
 * Roadmap: [Pivotal Tracker](https://www.pivotaltracker.com/n/projects/956238) (label:bosh-lite)
 
-A local development environment for BOSH using Warden containers in a Vagrant box.
+BOSH Lite is a pre-built [Vagrant](https://www.vagrantup.com/) box which includes [the Director](http://bosh.io/docs/terminology.html#director). It uses containers (via Warden/Garden CPI) to emulate VMs which makes it an excellent choice for:
+
+- General BOSH exploration without investing time and resources to configure an IaaS
+- Development of releases (including BOSH itself)
+- Testing releases locally or in CI
 
 This readme walks through deploying Cloud Foundry with BOSH Lite. BOSH and BOSH Lite can be used to deploy just about anything once you've got the hang of it.
 
 1. [Install BOSH Lite](#install-bosh-lite)
-    a. [Prepare the Environment](#prepare-the-environment)
-    b. [Install and Boot a Virtual Machine](#install-and-boot-a-virtual-machine)
-    c. [Customizing the Local VM IP](#customizing-the-local-vm-ip)
-2. [Deploy Cloud Foundry](#deploy-cloud-foundry)
-3. [Troubleshooting](#troubleshooting)
-4. [Upgrading the BOSH Lite VM](#upgrading-the-bosh-lite-vm)
-5. [Miscellaneous](#miscellaneous)
+    1. [Prepare the Environment](#prepare-the-environment)
+    1. [Install and Boot a Virtual Machine](#install-and-boot-a-virtual-machine)
+    1. [Customizing the Local VM IP](#customizing-the-local-vm-ip)
+1. [Deploy Cloud Foundry](#deploy-cloud-foundry)
+1. [Troubleshooting](#troubleshooting)
+1. [Upgrading the BOSH Lite VM](#upgrading-the-bosh-lite-vm)
+1. [Miscellaneous](#miscellaneous)
 
 ## Install BOSH Lite
 
@@ -38,7 +42,7 @@ This readme walks through deploying Cloud Foundry with BOSH Lite. BOSH and BOSH 
 
     ```
     $ vagrant --version
-    Vagrant 1.6.3
+    Vagrant 1.7.4
     ```
 
 1. Clone this repository
@@ -65,7 +69,7 @@ Installation instructions for different Vagrant providers:
 
     ```
     $ VBoxManage --version
-    4.3.14r95030
+    5.0.16r...
     ```
 
     Note: If you encounter problems with VirtualBox networking try installing [Oracle VM VirtualBox Extension Pack](https://www.virtualbox.org/wiki/Downloads) as suggested by [Issue 202](https://github.com/cloudfoundry/bosh-lite/issues/202).
@@ -86,8 +90,6 @@ Installation instructions for different Vagrant providers:
 
     $ bosh target 192.168.50.4 lite
     Target set to `Bosh Lite Director'
-
-    $ bosh login
     Your username: admin
     Enter password: *****
     Logged in as `admin'
@@ -110,9 +112,13 @@ The local VMs (virtualbox, vmware providers) will be accessible at `192.168.50.4
   end
 ```
 
+### CA certificate
+
+CA certificate that can be used with the BOSH CLI is saved in `ca/certs/ca.crt`. It's created for `192.168.50.4` and `*.sslip.io`.
+
 ## Deploy Cloud Foundry
 
-See [deploying Cloud Foundry documentation](http://docs.cloudfoundry.org/deploying/boshlite/deploy_cf_boshlite.html) for detailed instructions. Alternatively run `./bin/provision_cf` from this repository.
+See [deploying Cloud Foundry documentation](http://docs.cloudfoundry.org/deploying/boshlite/deploy_cf_boshlite.html) for detailed instructions. Alternatively, check out [CF Release](https://github.com/cloudfoundry/cf-release) as `~/workspace/cf-release` and return to the `bosh-lite` repository and run `./bin/provision_cf`.
 
 ## Troubleshooting
 
@@ -123,6 +129,7 @@ See [deploying Cloud Foundry documentation](http://docs.cloudfoundry.org/deployi
 If you wish to upgrade the BOSH Lite VM, you can run the following commands from the root of the `bosh-lite` directory. Make sure you have the latest version of this repository checked out. WARNING: these operations are destructive, and essentially amount to starting from scratch.
 
 ```
+$ git pull
 $ vagrant box update
 $ vagrant destroy
 $ vagrant up --provider=DESIRED_PROVIDER
@@ -130,6 +137,7 @@ $ vagrant up --provider=DESIRED_PROVIDER
 
 ## Miscellaneous
 
+* [Warden CPI's cloud properties](http://bosh.io/docs/warden-cpi.html) for configuring deployment manifest
 * [bosh cck documentation](docs/bosh-cck.md) for restoring deployments after VM reboot
 * [bosh ssh documentation](docs/bosh-ssh.md) for SSH into deployment jobs
 * [Offline documentation](docs/offline-dns.md) to configure BOSH lite firewall rules

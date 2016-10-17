@@ -24,7 +24,7 @@ Related issue: <https://github.com/cloudfoundry/bosh-lite/issues/296>
 
 ## None of the deployed components are accessible after reboot
 
-See [bosh cck documentation](docs/bosh-cck.md) for restoring deployments after VM reboot.
+See [bosh cck documentation](bosh-cck.md) for restoring deployments after VM reboot.
 
 ## Inaccessible Director
 
@@ -38,6 +38,25 @@ cannot access director (execution expired)
 ```
 
 Make sure that `192.168.50.1` is pingable. If it's not pingable, it is most likely that your VirtualBox installation did not properly set up networking. Rebooting the machine that runs VirtualBox typically resolves this problem.
+
+## Network already acquired
+
+```
+Error 100: Creating VM with agent ID 'cfd86507-0dec-417f-b19f-5d87806bf783': Creating container: network already acquired: 10.244.9.16/30
+```
+
+This error happens when VMs (really containers) managed by Garden are left around from a previous deploy. Typically this is due using `--force` flag on `bosh delete deployment` command. Easiest way to resolve this problem is to run `vagrant reload` which will restart the bosh-lite VM and clear up any state.
+
+Related issue: <https://github.com/cloudfoundry/bosh-lite/issues/311>
+
+## Customization command failed
+
+```
+A customization command failed:
+["modifyvm", :id, "--paravirtprovider", "minimal"]
+```
+
+Please upgrade to VirtualBox 5+. We are now using 'paravirtprovider=minimal' mode to avoid kernel CPU lockups.
 
 ## "An error occurred while downloading the remote file. The error message, if any, is reproduced below. Please fix this error and try again."
 

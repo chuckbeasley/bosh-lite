@@ -1,6 +1,6 @@
 {
   "variables": {
-    "base_ami": "ami-6df05806",
+    "base_ami": "ami-678b260c",
     "region": "us-east-1",
     "build_number": "0"
   },
@@ -28,7 +28,9 @@
       "scripts/kernel-cleanup.sh",
       "scripts/admin-sudoers.sh",
       "scripts/setup-syslog.sh",
-      "scripts/setup-ntpdate.sh"
+      "scripts/setup-ntpdate.sh",
+      "scripts/prevent-routing-loops.sh",
+      "scripts/disable-local-ip-masq.sh"
     ]
   },{
     "type": "shell",

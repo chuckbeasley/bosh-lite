@@ -1,9 +1,10 @@
 ---
 platform: linux
 
-tags: [hetzner]
-
-image: docker:///cloudfoundry/bosh-lite-ci
+image_resource:
+  type: docker-image
+  source:
+    repository: cloudfoundry/bosh-lite-ci
 
 inputs:
 - name: bosh-lite

@@ -16,11 +16,5 @@ inputs:
 outputs:
 - name: box-out
 
-params:
-  BOSH_AWS_ACCESS_KEY_ID:
-  BOSH_AWS_SECRET_ACCESS_KEY:
-
-  BOX_TYPE: virtualbox
-
 run:
-  path: bosh-lite/ci/build-box-local.sh
+  path: bosh-lite/ci/build-box-docker.sh
