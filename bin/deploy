@@ -1,4 +1,3 @@
-bosh upload stemcell https://s3.amazonaws.com/bosh-warden-stemcells/latest-bosh-stemcell-warden-ubuntu-trusty-go_agent.tgz
 git clone https://github.com/cloudfoundry/cf-release
 cd cf-release
 git checkout
